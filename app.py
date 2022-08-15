@@ -29,7 +29,10 @@ migration = Migrate(app, db)
 # TODO: connect to a local postgresql database
 from models import *
 
-# SETUP DATABASE
+# #----------------------------------------------------------------------------#
+#   SETUP GENRES TABLE
+#----------------------------------------------------------------------------#
+
 # Run migrations and then run sql script, genres_populate.sql to populate the genres table
 #----------------------------------------------------------------------------#
 # Filters.
