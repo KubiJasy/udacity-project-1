@@ -1,30 +1,39 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField,SelectMultipleField, DateTimeField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, AnyOf, URL, Optional, Length
+
 
 class ShowForm(Form):
     artist_id = StringField(
-        'artist_id'
+        'artist_id', validators=[DataRequired(message="A show date must be added")]
     )
     venue_id = StringField(
-        'venue_id'
+        'venue_id', validators=[DataRequired(message="A show date must be added")]
     )
     start_time = DateTimeField(
         'start_time',
-        validators=[DataRequired()],
+        validators=[DataRequired(message="A show date must be added")],
         default= datetime.today()
     )
 
 class VenueForm(Form):
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('Phone number is too long.')
+        try:
+            number = int(field.data)
+        except:
+            raise ValidationError('Please enter a valid phone number')
+
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name', validators=[DataRequired(message='Name required')]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city', validators=[DataRequired(message='City required')]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
+        'state', validators=[DataRequired(message='State required')],
         choices=[
             ('AL', 'AL'),
             ('AK', 'AK'),
@@ -80,44 +89,24 @@ class VenueForm(Form):
         ]
     )
     address = StringField(
-        'address', validators=[DataRequired()]
+        'address', validators=[DataRequired(message='Address must be filled')]
     )
     phone = StringField(
-        'phone'
+        'phone', validators=[Optional(), Length(min=10, message='Phone number too short')]
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[Optional(), URL(message='Please enter a valid URL')]
     )
     genres = SelectMultipleField(
         # TODO implement enum restriction
         'genres', validators=[DataRequired()],
-        choices=[
-            ('Alternative', 'Alternative'),
-            ('Blues', 'Blues'),
-            ('Classical', 'Classical'),
-            ('Country', 'Country'),
-            ('Electronic', 'Electronic'),
-            ('Folk', 'Folk'),
-            ('Funk', 'Funk'),
-            ('Hip-Hop', 'Hip-Hop'),
-            ('Heavy Metal', 'Heavy Metal'),
-            ('Instrumental', 'Instrumental'),
-            ('Jazz', 'Jazz'),
-            ('Musical Theatre', 'Musical Theatre'),
-            ('Pop', 'Pop'),
-            ('Punk', 'Punk'),
-            ('R&B', 'R&B'),
-            ('Reggae', 'Reggae'),
-            ('Rock n Roll', 'Rock n Roll'),
-            ('Soul', 'Soul'),
-            ('Other', 'Other'),
-        ]
+        choices=[], coerce=int
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'facebook_link', validators=[Optional(), URL(message='Please enter a valid URL')]
     )
     website_link = StringField(
-        'website_link'
+        'website_link', validators=[Optional(), URL(message='Please enter a valid URL')]
     )
 
     seeking_talent = BooleanField( 'seeking_talent' )
@@ -129,14 +118,22 @@ class VenueForm(Form):
 
 
 class ArtistForm(Form):
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('Phone number is too long.')
+        try:
+            number = int(field.data)
+        except:
+            raise ValidationError('Please enter a valid phone number')
+
     name = StringField(
-        'name', validators=[DataRequired()]
+        'name', validators=[DataRequired(message='Name required')]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'city', validators=[DataRequired(message='City required')]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
+        'state', validators=[DataRequired(message='State required')],
         choices=[
             ('AL', 'AL'),
             ('AK', 'AK'),
@@ -192,44 +189,21 @@ class ArtistForm(Form):
         ]
     )
     phone = StringField(
-        # TODO implement validation logic for state
-        'phone'
+        'phone', validators=[Optional(), Length(min=10, message='Phone number too short')]
     )
     image_link = StringField(
-        'image_link'
+        'image_link', validators=[Optional(), URL(message='Please enter a valid URL')]
     )
     genres = SelectMultipleField(
         'genres', validators=[DataRequired()],
-        choices=[
-            ('Alternative', 'Alternative'),
-            ('Blues', 'Blues'),
-            ('Classical', 'Classical'),
-            ('Country', 'Country'),
-            ('Electronic', 'Electronic'),
-            ('Folk', 'Folk'),
-            ('Funk', 'Funk'),
-            ('Hip-Hop', 'Hip-Hop'),
-            ('Heavy Metal', 'Heavy Metal'),
-            ('Instrumental', 'Instrumental'),
-            ('Jazz', 'Jazz'),
-            ('Musical Theatre', 'Musical Theatre'),
-            ('Pop', 'Pop'),
-            ('Punk', 'Punk'),
-            ('R&B', 'R&B'),
-            ('Reggae', 'Reggae'),
-            ('Rock n Roll', 'Rock n Roll'),
-            ('Soul', 'Soul'),
-            ('Other', 'Other'),
-        ]
+        choices=[], coerce=int
      )
     facebook_link = StringField(
-        # TODO implement enum restriction
-        'facebook_link', validators=[URL()]
-     )
-
+        'facebook_link', validators=[Optional(), URL(message='Please enter a valid URL')]
+    )
     website_link = StringField(
-        'website_link'
-     )
+        'website_link', validators=[Optional(), URL(message='Please enter a valid URL')]
+    )
 
     seeking_venue = BooleanField( 'seeking_venue' )
 
